@@ -60,6 +60,7 @@ struct EVMSchedule
     unsigned logTopicGas = 375;
     unsigned createGas = 32000;
     unsigned callGas = 40;
+    unsigned precompileStaticCallGas = 700;
     unsigned callStipend = 2300;
     unsigned callValueTransferGas = 9000;
     unsigned callNewAccountGas = 25000;
@@ -154,6 +155,7 @@ static const EVMSchedule IstanbulSchedule = [] {
     schedule.sloadGas = 800;
     schedule.balanceGas = 700;
     schedule.extcodehashGas = 700;
+    schedule.precompileStaticCallGas = 40;
     schedule.haveChainID = true;
     schedule.haveSelfbalance = true;
     return schedule;
