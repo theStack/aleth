@@ -1680,6 +1680,10 @@ void LegacyVM::interpretCases()
             updateSSGas();
             updateIOGas();
 
+            if (m_schedule->sstoreThrowsIfGasBelowCallStipend() &&
+                m_io_gas <= m_schedule->callStipend)
+                throwOutOfGas();
+
             m_ext->setStore(m_SP[0], m_SP[1]);
         }
         NEXT
