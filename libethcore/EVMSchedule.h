@@ -17,13 +17,16 @@
 
 #pragma once
 
-#include <array>
+#include <libdevcore/Common.h>
+#include <libethcore/Common.h>
 #include <boost/optional.hpp>
+#include <array>
 
 namespace dev
 {
 namespace eth
 {
+struct AdditionalEIPs;
 
 struct EVMSchedule
 {
@@ -155,7 +158,6 @@ static const EVMSchedule IstanbulSchedule = [] {
     schedule.sloadGas = 800;
     schedule.balanceGas = 700;
     schedule.extcodehashGas = 700;
-    schedule.precompileStaticCallGas = 40;
     schedule.haveChainID = true;
     schedule.haveSelfbalance = true;
     return schedule;
@@ -182,5 +184,7 @@ inline EVMSchedule const& latestScheduleForAccountVersion(u256 const& _version)
         return DefaultSchedule;
     }
 }
+
+EVMSchedule addEIPs(EVMSchedule const& _schedule, AdditionalEIPs const& _eips);
 }
 }

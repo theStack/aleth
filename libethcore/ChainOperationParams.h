@@ -25,12 +25,12 @@
 #include <libethcore/Precompiled.h>
 
 #include "Common.h"
-#include "EVMSchedule.h"
 
 namespace dev
 {
 namespace eth
 {
+struct EVMSchedule;
 
 class PrecompiledContract
 {
@@ -69,6 +69,11 @@ private:
 
 constexpr int64_t c_infiniteBlockNumber = std::numeric_limits<int64_t>::max();
 
+struct AdditionalEIPs
+{
+    bool eip2046 = false;
+};
+
 struct ChainOperationParams
 {
     ChainOperationParams();
@@ -78,9 +83,23 @@ struct ChainOperationParams
     /// The chain sealer name: e.g. Ethash, NoProof, BasicAuthority
     std::string sealEngineName = "NoProof";
 
+    // Example of how to check EIP activation from outside of EVM:
+    // bool isEIP2046Enabled(u256 const& _blockNumber) const
+    // {
+    //     return _blockNumber >= lastForkBlock && lastForkAdditionalEIPs.eip2046;
+    // }
+    // After hard fork finalization this is changed to:
+    // bool isEIP2046Enabled(u256 const& _blockNumber) const
+    // {
+    //     return _blockNumber >= berlinForkBlock;
+    // }
+
     /// General chain params.
 private:
     u256 m_blockReward;
+
+    EVMSchedule const& constScheduleForBlockNumber(u256 const& _blockNumber) const;
+
 public:
     EVMSchedule const& scheduleForBlockNumber(u256 const& _blockNumber) const;
     u256 blockReward(EVMSchedule const& _schedule) const;
@@ -101,6 +120,9 @@ public:
     u256 daoHardforkBlock = c_infiniteBlockNumber;
     u256 experimentalForkBlock = c_infiniteBlockNumber;
     u256 istanbulForkBlock = c_infiniteBlockNumber;
+    u256 lastForkBlock = c_infiniteBlockNumber;
+    AdditionalEIPs lastForkAdditionalEIPs;
+
     int chainID = 0;    // Distinguishes different chains (mainnet, Ropsten, etc).
     int networkID = 0;  // Distinguishes different sub protocols.
 
