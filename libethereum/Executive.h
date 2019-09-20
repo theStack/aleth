@@ -157,8 +157,8 @@ public:
     bool createOpcode(Address const& _sender, u256 const& _endowment, u256 const& _gasPrice, u256 const& _gas, bytesConstRef _code, Address const& _originAddress);
     /// @returns false iff go() must be called (and thus a VM execution in required).
     bool create2Opcode(Address const& _sender, u256 const& _endowment, u256 const& _gasPrice, u256 const& _gas, bytesConstRef _code, Address const& _originAddress, u256 const& _salt);
-    /// Set up the executive for evaluating a bare CALL (message call) operation.
-    /// @returns false iff go() must be called (and thus a VM execution in required).
+    /// Set up the executive for evaluating a bare CALL (message call i.e. transfer of value, no contract code execution) operation.
+    /// @returns false iff go() must be called (and thus a VM execution is required)
     bool call(Address const& _receiveAddress, Address const& _txSender, u256 const& _txValue, u256 const& _gasPrice, bytesConstRef _txData, u256 const& _gas);
     bool call(CallParameters const& _cp, u256 const& _gasPrice, Address const& _origin);
     /// Finalise an operation through accruing the substate into the parent context.

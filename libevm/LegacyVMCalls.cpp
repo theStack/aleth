@@ -24,10 +24,10 @@ using namespace dev::eth;
 
 void LegacyVM::copyDataToMemory(bytesConstRef _data, u256*_sp)
 {
-    auto offset = static_cast<size_t>(_sp[0]);
-    s512 bigIndex = _sp[1];
-    auto index = static_cast<size_t>(bigIndex);
-    auto size = static_cast<size_t>(_sp[2]);
+    auto const offset = static_cast<size_t>(_sp[0]);
+    s512 const bigIndex = _sp[1];
+    auto const index = static_cast<size_t>(bigIndex);
+    auto const size = static_cast<size_t>(_sp[2]);
 
     size_t sizeToBeCopied = bigIndex + size > _data.size() ? _data.size() < bigIndex ? 0 : _data.size() - index : size;
 
@@ -101,7 +101,7 @@ int64_t LegacyVM::verifyJumpDest(u256 const& _dest, bool _throw)
 
         // check for within bounds and to a jump destination
         // use binary search of array because hashtable collisions are exploitable
-        uint64_t pc = uint64_t(_dest);
+        auto const pc = uint64_t(_dest);
         if (std::binary_search(m_jumpDests.begin(), m_jumpDests.end(), pc))
             return pc;
     }
@@ -210,7 +210,7 @@ bool LegacyVM::caseCallSetup(CallParameters *callParams, bytesRef& o_output)
 
     bool const haveValueArg = m_OP == Instruction::CALL || m_OP == Instruction::CALLCODE;
 
-    Address destinationAddr = asAddress(m_SP[1]);
+    Address const destinationAddr = asAddress(m_SP[1]);
     if (m_OP == Instruction::CALL &&
         (m_SP[2] > 0 || m_schedule->zeroValueTransferChargesNewAccountGas()) &&
         !m_ext->exists(destinationAddr))
@@ -220,12 +220,12 @@ bool LegacyVM::caseCallSetup(CallParameters *callParams, bytesRef& o_output)
         m_runGas += toInt63(m_schedule->callValueTransferGas);
 
     size_t const sizesOffset = haveValueArg ? 3 : 2;
-    u256 inputOffset  = m_SP[sizesOffset];
-    u256 inputSize    = m_SP[sizesOffset + 1];
-    u256 outputOffset = m_SP[sizesOffset + 2];
-    u256 outputSize   = m_SP[sizesOffset + 3];
-    uint64_t inputMemNeed = memNeed(inputOffset, inputSize);
-    uint64_t outputMemNeed = memNeed(outputOffset, outputSize);
+    u256 const inputOffset  = m_SP[sizesOffset];
+    u256 const inputSize    = m_SP[sizesOffset + 1];
+    u256 const outputOffset = m_SP[sizesOffset + 2];
+    u256 const outputSize   = m_SP[sizesOffset + 3];
+    uint64_t const inputMemNeed = memNeed(inputOffset, inputSize);
+    uint64_t const outputMemNeed = memNeed(outputOffset, outputSize);
 
     m_newMemSize = std::max(inputMemNeed, outputMemNeed);
     updateMem(m_newMemSize);
@@ -240,7 +240,7 @@ bool LegacyVM::caseCallSetup(CallParameters *callParams, bytesRef& o_output)
     else
     {
         // Apply "all but one 64th" rule.
-        u256 maxAllowedCallGas = m_io_gas - m_io_gas / 64;
+        u256 const maxAllowedCallGas = m_io_gas - m_io_gas / 64;
         callParams->gas = std::min(m_SP[0], maxAllowedCallGas);
     }
 
@@ -261,10 +261,10 @@ bool LegacyVM::caseCallSetup(CallParameters *callParams, bytesRef& o_output)
         // Forward VALUE.
         callParams->apparentValue = m_ext->value;
 
-    uint64_t inOff = (uint64_t)inputOffset;
-    uint64_t inSize = (uint64_t)inputSize;
-    uint64_t outOff = (uint64_t)outputOffset;
-    uint64_t outSize = (uint64_t)outputSize;
+    uint64_t const inOff = (uint64_t)inputOffset;
+    uint64_t const inSize = (uint64_t)inputSize;
+    uint64_t const outOff = (uint64_t)outputOffset;
+    uint64_t const outSize = (uint64_t)outputSize;
 
     if (m_ext->balance(m_ext->myAddress) >= callParams->valueTransfer && m_ext->depth < 1024)
     {

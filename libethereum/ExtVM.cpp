@@ -30,13 +30,13 @@ using namespace dev::eth;
 namespace // anonymous
 {
 
-static unsigned const c_depthLimit = 1024;
+constexpr unsigned c_depthLimit = 1024;
 
 /// Upper bound of stack space needed by single CALL/CREATE execution. Set experimentally.
-static size_t const c_singleExecutionStackSize = 100 * 1024;
+constexpr size_t c_singleExecutionStackSize = 100 * 1024;
 
 /// Standard thread stack size.
-static size_t const c_defaultStackSize =
+constexpr size_t c_defaultStackSize =
 #if defined(__linux)
      8 * 1024 * 1024;
 #elif defined(_WIN32)
@@ -46,10 +46,10 @@ static size_t const c_defaultStackSize =
 #endif
 
 /// Stack overhead prior to allocation.
-static size_t const c_entryOverhead = 128 * 1024;
+constexpr size_t c_entryOverhead = 128 * 1024;
 
 /// On what depth execution should be offloaded to additional separated stack space.
-static unsigned const c_offloadPoint = (c_defaultStackSize - c_entryOverhead) / c_singleExecutionStackSize;
+constexpr unsigned c_offloadPoint = (c_defaultStackSize - c_entryOverhead) / c_singleExecutionStackSize;
 
 void goOnOffloadedStack(Executive& _e, OnOpFunc const& _onOp)
 {

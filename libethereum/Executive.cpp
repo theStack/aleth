@@ -318,7 +318,7 @@ bool Executive::call(CallParameters const& _p, u256 const& _gasPrice, Address co
         if (_p.receiveAddress == c_RipemdPrecompiledAddress)
             m_s.unrevertableTouch(_p.codeAddress);
 
-        bigint g = m_sealEngine.costOfPrecompiled(_p.codeAddress, _p.data, m_envInfo.number());
+        bigint const g = m_sealEngine.costOfPrecompiled(_p.codeAddress, _p.data, m_envInfo.number());
         if (_p.gas < g)
         {
             m_excepted = TransactionException::OutOfGasBase;
@@ -331,7 +331,7 @@ bool Executive::call(CallParameters const& _p, u256 const& _gasPrice, Address co
             bytes output;
             bool success;
             tie(success, output) = m_sealEngine.executePrecompiled(_p.codeAddress, _p.data, m_envInfo.number());
-            size_t outputSize = output.size();
+            size_t const outputSize = output.size();
             m_output = owning_bytes_ref{std::move(output), 0, outputSize};
             if (!success)
             {

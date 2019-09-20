@@ -74,8 +74,8 @@ owning_bytes_ref EVMC::exec(u256& io_gas, ExtVMFace& _ext, const OnOpFunc& _onOp
     auto gas = static_cast<int64_t>(io_gas);
 
     auto mode = toRevision(_ext.evmSchedule());
-    evmc_call_kind kind = _ext.isCreate ? EVMC_CREATE : EVMC_CALL;
-    uint32_t flags = _ext.staticCall ? EVMC_STATIC : 0;
+    evmc_call_kind const kind = _ext.isCreate ? EVMC_CREATE : EVMC_CALL;
+    uint32_t const flags = _ext.staticCall ? EVMC_STATIC : 0;
     assert(flags != EVMC_STATIC || kind == EVMC_CALL);  // STATIC implies a CALL.
     evmc_message msg = {kind, flags, static_cast<int32_t>(_ext.depth), gas, toEvmC(_ext.myAddress),
         toEvmC(_ext.caller), _ext.data.data(), _ext.data.size(), toEvmC(_ext.value),
