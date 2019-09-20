@@ -35,6 +35,7 @@ struct EVMSchedule
     bool eip150Mode = false;
     bool eip158Mode = false;
     bool eip1283Mode = false;
+    bool eip1380Mode = false;
     bool haveBitwiseShifting = false;
     bool haveRevert = false;
     bool haveReturnData = false;
@@ -63,6 +64,7 @@ struct EVMSchedule
     unsigned callStipend = 2300;
     unsigned callValueTransferGas = 9000;
     unsigned callNewAccountGas = 25000;
+    unsigned callSelfGas = 40;
     unsigned selfdestructRefundGas = 24000;
     unsigned memoryGas = 3;
     unsigned quadCoeffDiv = 512;
@@ -86,6 +88,7 @@ struct EVMSchedule
     bool staticCallDepthLimit() const { return !eip150Mode; }
     bool emptinessIsNonexistence() const { return eip158Mode; }
     bool zeroValueTransferChargesNewAccountGas() const { return !eip158Mode; }
+    bool reducedCallToSelfGas() const { return eip1380Mode; }
 };
 
 static const EVMSchedule DefaultSchedule = EVMSchedule();
@@ -163,6 +166,7 @@ static const EVMSchedule ExperimentalSchedule = [] {
     EVMSchedule schedule = IstanbulSchedule;
     schedule.accountVersion = 1;
     schedule.blockhashGas = 800;
+    schedule.eip1380Mode = true;
     return schedule;
 }();
 
