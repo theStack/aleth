@@ -204,8 +204,6 @@ void VM::caseCall()
 
 bool VM::caseCallSetup(evmc_message& o_msg, bytesRef& o_output)
 {
-    m_runGas = m_rev >= EVMC_TANGERINE_WHISTLE ? 700 : 40;
-
     switch (m_OP)
     {
     case Instruction::CALL:
@@ -236,6 +234,14 @@ bool VM::caseCallSetup(evmc_message& o_msg, bytesRef& o_output)
 
     if (haveValueArg && m_SP[2] > 0)
         m_runGas += VMSchedule::valueTransferGas;
+
+    // Check for call-to-self (eip1380) and adjust gas accordingly
+    if (fromEvmC(m_message->destination) == fromEvmC(destination) && m_rev >= EVMC_BERLIN)
+    {
+        auto const opGasCost =
+            evmc_get_instruction_metrics_table(m_rev)[static_cast<size_t>(m_OP)].gas_cost;
+        m_runGas -= (opGasCost - VMSchedule::callSelfGas);
+    }
 
     size_t const sizesOffset = haveValueArg ? 3 : 2;
     u256 inputOffset  = m_SP[sizesOffset];
